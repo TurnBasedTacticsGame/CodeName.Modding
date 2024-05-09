@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-using CodeName.Modding.ImportedAssets;
+using System;
 using UnityEditor;
 
 namespace CodeName.Modding.Editor
@@ -16,14 +16,11 @@ namespace CodeName.Modding.Editor
                     continue;
                 }
 
-                if (AssetDatabase.GetImporterOverride(path) == null)
+                var importerType = AssetDatabase.GetImporterType(path);
+                if (typeof(ISaveableImporter).IsAssignableFrom(importerType))
                 {
-                    continue;
-                }
-
-                if (asset is IImportedAsset importedAsset)
-                {
-                    importedAsset.Save(path);
+                    var importer = (ISaveableImporter)Activator.CreateInstance(importerType);
+                    importer.Save(asset, path);
                 }
             }
 

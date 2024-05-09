@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using CodeName.Modding.Localization;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CodeName.Modding.Mods
 {
