@@ -16,7 +16,7 @@ namespace CodeName.Modding.Editor
         /// <summary>
         /// Tracks the selected locale code by ModInfo.
         /// </summary>
-        private static Dictionary<ModInfo, string> SelectedLocaleCode { get; } = new();
+        private static string SelectedLocaleCode { get; set; }
 
         /// <summary>
         /// Tracks if the foldout is open by Property.Path.
@@ -31,7 +31,6 @@ namespace CodeName.Modding.Editor
             localizedString = (LocalizedString)Property.ValueEntry.WeakSmartValue;
             asset.TryGetResourceKey(out resourceKey, out mod);
 
-            SelectedLocaleCode.TryAdd(mod, null);
             IsFoldoutOpen.TryAdd(Property.Path, false);
         }
 
@@ -113,7 +112,7 @@ namespace CodeName.Modding.Editor
                 GUI.enabled = false;
 
                 SirenixEditorFields.Dropdown(GetPrefixLabelRect(), GUIContent.none, null, new List<string>());
-                SelectedLocaleCode[mod] = null;
+                SelectedLocaleCode = null;
 
                 GUI.enabled = originalIsEnabled;
 
@@ -127,18 +126,18 @@ namespace CodeName.Modding.Editor
             else
             {
                 var possibleLocales = collection.Tables.Select(t => t.LocaleCode).ToList();
-                if (SelectedLocaleCode[mod] == null || !possibleLocales.Contains(SelectedLocaleCode[mod]))
+                if (SelectedLocaleCode == null || !possibleLocales.Contains(SelectedLocaleCode))
                 {
-                    SelectedLocaleCode[mod] = possibleLocales.FirstOrDefault();
-                    if (SelectedLocaleCode[mod] == null)
+                    SelectedLocaleCode = possibleLocales.FirstOrDefault();
+                    if (SelectedLocaleCode == null)
                     {
                         return DrawDisabledDropdown();
                     }
                 }
 
                 var options = collection.Tables.Select(t => t.LocaleCode).ToList();
-                SelectedLocaleCode[mod] = SirenixEditorFields.Dropdown(GetPrefixLabelRect(), GUIContent.none, SelectedLocaleCode[mod], options);
-                var table = collection.Tables.Find(t => t.LocaleCode == SelectedLocaleCode[mod]);
+                SelectedLocaleCode = SirenixEditorFields.Dropdown(GetPrefixLabelRect(), GUIContent.none, SelectedLocaleCode, options);
+                var table = collection.Tables.Find(t => t.LocaleCode == SelectedLocaleCode);
 
                 return table;
             }
