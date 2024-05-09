@@ -25,20 +25,26 @@ namespace CodeName.Modding.Editor
         /// </summary>
         private static Dictionary<string, bool> IsFoldoutOpen { get; } = new();
 
-        private void Initialize(out Object asset, out LocalizedString localizedString, out ModInfo mod, out string resourceKey)
+        private void Initialize(out Object asset, out LocalizedString localizedString, out ModInfo mod, out LocalizationTableCollection collection)
         {
             base.Initialize();
 
             asset = (Object)Property.SerializationRoot.ValueEntry.WeakSmartValue;
             localizedString = (LocalizedString)Property.ValueEntry.WeakSmartValue;
-            asset.TryGetResourceKey(out resourceKey, out mod);
-
             IsFoldoutOpen.TryAdd(Property.Path, false);
+
+            if (!asset.TryGetExpectedMod(out mod))
+            {
+                collection = null;
+                return;
+            }
+
+            collection = mod.MainLocalizationTableCollection;
         }
 
         protected override void DrawPropertyLayout(GUIContent label)
         {
-            Initialize(out var asset, out var localizedString, out var mod, out _);
+            Initialize(out var asset, out var localizedString, out var mod, out var collection);
 
             using (new GUILayout.HorizontalScope())
             {
@@ -53,7 +59,15 @@ namespace CodeName.Modding.Editor
                 }
 
                 Property.RecordForUndo("Edit localization key");
-                localizedString.Key = EditorGUILayout.TextField(localizedString.Key);
+
+                if (mod != null)
+                {
+                    localizedString.Key = EditorGUILayout.TextField(localizedString.Key);
+                }
+                else
+                {
+                    SirenixEditorGUI.WarningMessageBox(AssetNotPartOfModMessage);
+                }
 
                 DrawCreateEntryButtonIfNeeded(asset);
             }
@@ -62,7 +76,7 @@ namespace CodeName.Modding.Editor
             {
                 using (new EditorGUI.IndentLevelScope(2))
                 {
-                    if (TryGetModLocalizationTableCollection(asset, out var collection, out var error))
+                    if (collection != null)
                     {
                         using (new GUILayout.HorizontalScope())
                         {
@@ -72,7 +86,7 @@ namespace CodeName.Modding.Editor
                     }
                     else
                     {
-                        SirenixEditorGUI.WarningMessageBox(error);
+                        SirenixEditorGUI.WarningMessageBox($"Mod does not have a {typeof(LocalizationTableCollection).Name}");
                         using (new GUILayout.HorizontalScope())
                         {
                             DrawLocaleCodeDropdown(mod, null);
@@ -195,30 +209,6 @@ namespace CodeName.Modding.Editor
             }
             EditorGUI.indentLevel = originalIndentLevel;
             GUI.enabled = originalIsEditable;
-        }
-
-        private bool TryGetModLocalizationTableCollection(Object asset, out LocalizationTableCollection collection, out string error)
-        {
-            if (!asset.TryGetResourceKey(out _, out var mod))
-            {
-                collection = null;
-                error = AssetNotPartOfModMessage;
-
-                return false;
-            }
-
-            if (mod.MainLocalizationTableCollection == null)
-            {
-                collection = null;
-                error = $"Mod does not have a {typeof(LocalizationTableCollection).Name}";
-
-                return false;
-            }
-
-            collection = mod.MainLocalizationTableCollection;
-            error = string.Empty;
-
-            return true;
         }
 
         private Rect GetPrefixLabelRect()
