@@ -116,7 +116,7 @@ namespace CodeName.Modding.Mods
                 writer.WriteLine($"public static string ModId {{ get; }} = \"{Id}\";");
                 writer.WriteLine();
 
-                using (writer.WithCBlock("public static partial class Resources"))
+                using (writer.WithCBlock("public static partial class Content"))
                 {
                     foreach (var resource in resources)
                     {

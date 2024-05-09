@@ -8,6 +8,9 @@ namespace CodeName.Modding.Mods
 {
     public partial class ModInfo : ScriptableObject
     {
+        public static string ContentFolderPath = "Content";
+        public static string OverridesFolderPath = "Overrides";
+
         [SerializeField] private string displayName = "Mod Name";
         [PropertySpace(SpaceBefore = 0, SpaceAfter = 16)]
         [SerializeField] private string id = "ModName";
@@ -32,7 +35,6 @@ namespace CodeName.Modding.Mods
         public string DisplayName => displayName;
         public string Id => id;
 
-        public string ContentFolderPath => contentFolderPath;
         public string GeneratedNamespace => generatedNamespace;
 
         public List<ModResource> Resources => resources;
