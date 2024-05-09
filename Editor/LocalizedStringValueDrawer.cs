@@ -13,6 +13,8 @@ namespace CodeName.Modding.Editor
 {
     public class LocalizedStringValueDrawer : OdinValueDrawer<LocalizedString>
     {
+        public static string AssetNotPartOfModMessage { get; } = "Asset is not part of a mod";
+
         /// <summary>
         /// Tracks the selected locale code by ModInfo.
         /// </summary>
@@ -92,6 +94,21 @@ namespace CodeName.Modding.Editor
             if (SirenixEditorGUI.IconButton(EditorIcons.Refresh, tooltip: "Generate Localization Entry"))
             {
                 var localizedString = LocalizationUtility.CreateLocalizedString(asset, attribute.Name);
+                if (!asset.TryGetResourceKey(out _, out var mod))
+                {
+                    return;
+                }
+
+                var collection = mod.MainLocalizationTableCollection;
+                if (collection == null)
+                {
+                    collection = mod.CreateLocalizationTable();
+                }
+
+                foreach (var table in collection.Tables)
+                {
+                    table.RawEntries.TryAdd(localizedString.Key, string.Empty);
+                }
 
                 Property.RecordForUndo("Generate localization key");
                 Property.ValueEntry.WeakSmartValue = localizedString;
@@ -164,7 +181,6 @@ namespace CodeName.Modding.Editor
                     table.TryGetLocalizedValue(localizationKey, out var currentValue);
 
                     var newValue = SirenixEditorFields.TextField(GUIContent.none, currentValue);
-
                     if (currentValue != newValue)
                     {
                         Undo.RecordObject(collection, "Edit localization entry");
@@ -186,7 +202,7 @@ namespace CodeName.Modding.Editor
             if (!asset.TryGetResourceKey(out _, out var mod))
             {
                 collection = null;
-                error = "Asset is not part of a mod";
+                error = AssetNotPartOfModMessage;
 
                 return false;
             }
