@@ -18,7 +18,6 @@ namespace CodeName.Modding.Mods
         [SerializeField] private ModEntrypoint entrypoint;
 
         [BoxGroup(LocalizationGroup)]
-        [FormerlySerializedAs("localizationTables")]
         [SerializeField] private List<LocalizationTableCollection> localizationTableCollections = new();
 
         [BoxGroup(CodegenGroup)]
