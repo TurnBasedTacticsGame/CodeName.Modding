@@ -3,7 +3,7 @@ using UnityEditor.AssetImporters;
 
 namespace CodeName.Modding.Editor
 {
-    [ScriptedImporter(1, null, new[] { "lang.csv" })]
+    [ScriptedImporter(1, new[] { "langcsv" })]
     public class LocalizationTableCollectionImporter : ScriptedImporter
     {
         private readonly LocalizationTableCollectionSerializer serializer = new();

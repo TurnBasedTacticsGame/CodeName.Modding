@@ -10,7 +10,7 @@ namespace CodeName.Modding.Mods
     public partial class ModInfo
     {
         private static string LocalizationTableFileName { get; } = "LocalizationTable";
-        private static string LocalizationTableExtension { get; } = ".lang.csv";
+        private static string LocalizationTableExtension { get; } = ".langcsv";
         private static string LocalizationTableDefaultContent { get; } = "Key";
 
         [Button(DrawResult = false)]
