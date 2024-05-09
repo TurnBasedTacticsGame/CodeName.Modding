@@ -87,11 +87,6 @@ namespace CodeName.Modding.Editor
                     else
                     {
                         SirenixEditorGUI.WarningMessageBox($"Mod does not have a {typeof(LocalizationTableCollection).Name}");
-                        using (new GUILayout.HorizontalScope())
-                        {
-                            DrawLocaleCodeDropdown(mod, null);
-                            DrawLocalizationEntryTextField(null, null, localizedString.Key);
-                        }
                     }
                 }
             }
