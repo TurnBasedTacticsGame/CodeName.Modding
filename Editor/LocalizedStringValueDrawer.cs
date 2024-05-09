@@ -48,14 +48,15 @@ namespace CodeName.Modding.Editor
 
             using (new GUILayout.HorizontalScope())
             {
-                if (localizedString.IsEmpty)
+                var drawFoldout = !localizedString.IsEmpty && mod != null;
+                if (drawFoldout)
                 {
-                    EditorGUILayout.PrefixLabel(label);
-                    IsFoldoutOpen[Property.Path] = false;
+                    IsFoldoutOpen[Property.Path] = EditorGUI.Foldout(GetPrefixLabelRect(), IsFoldoutOpen[Property.Path], label);
                 }
                 else
                 {
-                    IsFoldoutOpen[Property.Path] = EditorGUI.Foldout(GetPrefixLabelRect(), IsFoldoutOpen[Property.Path], label);
+                    EditorGUILayout.PrefixLabel(label);
+                    IsFoldoutOpen[Property.Path] = false;
                 }
 
                 Property.RecordForUndo("Edit localization key");
@@ -63,13 +64,12 @@ namespace CodeName.Modding.Editor
                 if (mod != null)
                 {
                     localizedString.Key = EditorGUILayout.TextField(localizedString.Key);
+                    DrawCreateEntryButtonIfNeeded(asset);
                 }
                 else
                 {
                     SirenixEditorGUI.WarningMessageBox(AssetNotPartOfModMessage);
                 }
-
-                DrawCreateEntryButtonIfNeeded(asset);
             }
 
             if (IsFoldoutOpen[Property.Path])
