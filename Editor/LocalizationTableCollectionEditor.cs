@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using CodeName.Modding.Localization;
-using Exanite.Core.Utilities;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -12,15 +11,8 @@ namespace CodeName.Modding.Editor
     {
         public override void OnInspectorGUI()
         {
-            if (target.GetOverrideImporter() != typeof(LocalizationTableCollectionImporter))
-            {
-                Draw();
-
-                return;
-            }
-
             var assetPath = AssetDatabase.GetAssetPath(target);
-            if (string.IsNullOrEmpty(assetPath))
+            if (string.IsNullOrEmpty(assetPath) || AssetDatabase.GetImporterType(assetPath) != typeof(LocalizationTableCollectionImporter))
             {
                 Draw();
 
