@@ -15,11 +15,7 @@ namespace CodeName.Modding.Localization
             this.key = key;
         }
 
-        public string Key
-        {
-            get => key;
-            set => key = value;
-        }
+        public string Key => key;
 
         public bool IsEmpty => string.IsNullOrEmpty(key);
 
