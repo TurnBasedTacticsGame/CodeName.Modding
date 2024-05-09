@@ -40,7 +40,7 @@ namespace CodeName.Modding.Mods
 
                 foreach (var subAsset in AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath))
                 {
-                    assetInfos.Add(new AssetInfo(asset, assetPath, subAsset.name));
+                    assetInfos.Add(new AssetInfo(subAsset, assetPath, subAsset.name));
                 }
             }
 
