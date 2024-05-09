@@ -6,7 +6,6 @@
         "Exanite.Core",
         "Exanite.SceneManagement",
         "Newtonsoft.Json.UnityConverters",
-        "OdinInspector.Addons",
         "UniDi.UniDi",
         "UniTask"
     ],
