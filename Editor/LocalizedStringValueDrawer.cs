@@ -87,7 +87,7 @@ namespace CodeName.Modding.Editor
                 {
                     if (collection != null)
                     {
-                        using (new GUILayout.HorizontalScope())
+                        using (new EditorGUILayout.HorizontalScope())
                         {
                             var table = DrawLocaleCodeDropdown(collection);
                             DrawLocalizationEntryTextField(collection, table, localizedString.Key);
@@ -185,33 +185,18 @@ namespace CodeName.Modding.Editor
         /// <param name="localizationKey">The localization key of the entry.</param>
         private void DrawLocalizationEntryTextField(LocalizationTableCollection collection, LocalizationTable table, string localizationKey)
         {
-            var originalIndentLevel = EditorGUI.indentLevel;
-            var originalIsEditable = GUI.enabled;
-
-            var isEditable = collection != null && table != null;
-
-            GUI.enabled = isEditable;
-            EditorGUI.indentLevel = 0;
+            using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
             {
-                if (isEditable)
-                {
-                    table.TryGetLocalizedValue(localizationKey, out var currentValue);
+                table.TryGetLocalizedValue(localizationKey, out var currentValue);
 
-                    var newValue = SirenixEditorFields.TextField(GUIContent.none, currentValue);
-                    if (currentValue != newValue)
-                    {
-                        Undo.RecordObject(collection, "Edit localization entry");
-                        table.RawEntries[localizationKey] = newValue;
-                        ImportedAssetUtility.SetDirty(collection);
-                    }
-                }
-                else
+                var newValue = EditorGUILayout.TextField(currentValue, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+                if (currentValue != newValue)
                 {
-                    SirenixEditorFields.TextField(GUIContent.none, "");
+                    Undo.RecordObject(collection, "Edit localization entry");
+                    table.RawEntries[localizationKey] = newValue;
+                    ImportedAssetUtility.SetDirty(collection);
                 }
             }
-            EditorGUI.indentLevel = originalIndentLevel;
-            GUI.enabled = originalIsEditable;
         }
 
         private Rect GetPrefixLabelRect()
