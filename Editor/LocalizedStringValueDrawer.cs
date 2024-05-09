@@ -63,7 +63,15 @@ namespace CodeName.Modding.Editor
 
                 if (mod != null)
                 {
-                    localizedString.Key = EditorGUILayout.TextField(localizedString.Key);
+                    if (Property.Info.IsEditable)
+                    {
+                        Property.ValueEntry.WeakSmartValue = new LocalizedString(EditorGUILayout.TextField(localizedString.Key));
+                    }
+                    else
+                    {
+                        GUILayout.Label(localizedString.Key);
+                    }
+
                     DrawCreateEntryButtonIfNeeded(asset);
                 }
                 else
@@ -80,7 +88,7 @@ namespace CodeName.Modding.Editor
                     {
                         using (new GUILayout.HorizontalScope())
                         {
-                            var table = DrawLocaleCodeDropdown(mod, collection);
+                            var table = DrawLocaleCodeDropdown(collection);
                             DrawLocalizationEntryTextField(collection, table, localizedString.Key);
                         }
                     }
@@ -127,10 +135,9 @@ namespace CodeName.Modding.Editor
         /// <summary>
         /// Draws the locale code dropdown and handles error cases by drawing a disabled dropdown.
         /// </summary>
-        /// <param name="mod">The mod the property's asset is in. Should have been retrieved during <see cref="Initialize">Initialize()</see>.</param>
         /// <param name="collection">Can be null.</param>
         /// <returns>The <see cref="LocalizationTable"/> corresponding to the selected locale code.</returns>
-        private LocalizationTable DrawLocaleCodeDropdown(ModInfo mod, LocalizationTableCollection collection)
+        private LocalizationTable DrawLocaleCodeDropdown(LocalizationTableCollection collection)
         {
             LocalizationTable DrawDisabledDropdown()
             {
