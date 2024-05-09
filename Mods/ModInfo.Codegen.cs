@@ -155,9 +155,6 @@ namespace CodeName.Modding.Mods
             writer.WriteLine($"public static global::{typeof(PropertyDefinition)}<global::{resource.Asset.GetType()}> {key} {{ get; }} = new(\"{resource.Key}\");");
         }
 
-        /// <remarks>
-        /// <see cref="assetPath"/> must be from the root of the project.
-        /// </remarks>
         private ResourceKey ConvertToModAssetKey(AssetInfo assetInfo)
         {
             var assetPath = Path.GetRelativePath(GetModPath(), assetInfo.Path);
