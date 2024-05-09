@@ -180,9 +180,6 @@ namespace CodeName.Modding.Editor
         /// <summary>
         /// Draws the localization entry text field and handles error cases by drawing a disabled text field.
         /// </summary>
-        /// <param name="collection">Can be null.</param>
-        /// <param name="table">Can be null.</param>
-        /// <param name="localizationKey">The localization key of the entry.</param>
         private void DrawLocalizationEntryTextField(LocalizationTableCollection collection, LocalizationTable table, string localizationKey)
         {
             using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
