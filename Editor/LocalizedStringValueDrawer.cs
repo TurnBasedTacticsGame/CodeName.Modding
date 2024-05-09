@@ -186,7 +186,7 @@ namespace CodeName.Modding.Editor
             {
                 table.TryGetLocalizedValue(localizationKey, out var currentValue);
 
-                var newValue = EditorGUILayout.TextField(currentValue, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+                var newValue = EditorGUILayout.TextArea(currentValue, EditorStyles.textArea, GUILayout.ExpandHeight(true));
                 if (currentValue != newValue)
                 {
                     Undo.RecordObject(collection, "Edit localization entry");
