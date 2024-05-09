@@ -5,10 +5,10 @@ using CodeName.Modding.Localization;
 using CodeName.Modding.Mods;
 using CodeName.Modding.Utility;
 using Sirenix.OdinInspector.Editor;
-using Sirenix.Utilities;
 using Sirenix.Utilities.Editor;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace CodeName.Modding.Editor
 {
@@ -64,15 +64,14 @@ namespace CodeName.Modding.Editor
 
                 if (mod != null)
                 {
-                    var originalBackgroundColor = GUI.backgroundColor;
-                    if (!Property.Info.IsEditable)
-                    {
-                        GUI.backgroundColor = Color.clear;
-                    }
+                    if (Property.Info.IsEditable)
                     {
                         Property.ValueEntry.WeakSmartValue = new LocalizedString(EditorGUILayout.TextField(localizedString.Key));
                     }
-                    GUI.backgroundColor = originalBackgroundColor;
+                    else
+                    {
+                        EditorGUILayout.SelectableLabel(localizedString.Key, GUILayout.MaxHeight(18));
+                    }
 
                     DrawCreateEntryButtonIfNeeded(asset);
                 }
