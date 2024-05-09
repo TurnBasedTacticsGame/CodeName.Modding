@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CodeName.Modding.Localization
 {
     [Serializable]
-    public class LocalizedString
+    public struct LocalizedString
     {
         public static string MissingKeyMessage { get; } = "MISSING_KEY";
 
