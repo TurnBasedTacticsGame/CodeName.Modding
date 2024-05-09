@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeName.Modding.Localization;
 using CodeName.Modding.Mods;
+using CodeName.Modding.Utility;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities.Editor;
 using UnityEditor;
@@ -12,8 +13,6 @@ namespace CodeName.Modding.Editor
 {
     public class LocalizedStringValueDrawer : OdinValueDrawer<LocalizedString>
     {
-        public static string AssetNotPartOfModMessage { get; } = "Asset is not part of a mod.";
-
         /// <summary>
         /// Tracks the selected locale code by ModInfo.
         /// </summary>
@@ -52,7 +51,7 @@ namespace CodeName.Modding.Editor
                     IsFoldoutOpen[Property.Path] = EditorGUI.Foldout(GetPrefixLabelRect(), IsFoldoutOpen[Property.Path], label);
                 }
 
-                Property.RecordForUndo("Edit localization key.");
+                Property.RecordForUndo("Edit localization key");
                 localizedString.Key = EditorGUILayout.TextField(localizedString.Key);
 
                 DrawCreateEntryButtonIfNeeded(asset);
@@ -93,28 +92,10 @@ namespace CodeName.Modding.Editor
 
             if (SirenixEditorGUI.IconButton(EditorIcons.Refresh, tooltip: "Generate Localization Entry"))
             {
-                if (!asset.TryGetResourceKey(out var key, out var mod))
-                {
-                    Debug.LogWarning(AssetNotPartOfModMessage, asset);
+                var localizedString = LocalizationUtility.CreateLocalizedString(asset, attribute.Name);
 
-                    return;
-                }
-
-                var collection = mod.MainLocalizationTableCollection;
-                if (collection == null)
-                {
-                    collection = mod.CreateLocalizationTable();
-                }
-
-                var localizationKey = $"{new ResourceKey(key).ReplaceCsharpUnsafeCharacters()}_{attribute.Name}";
-                foreach (var table in collection.Tables)
-                {
-                    table.RawEntries.TryAdd(localizationKey, string.Empty);
-                }
-
-                Property.RecordForUndo("Generate localization key.");
-                Property.ValueEntry.WeakSmartValue = new LocalizedString(localizationKey);
-                ImportedAssetUtility.SetDirty(collection);
+                Property.RecordForUndo("Generate localization key");
+                Property.ValueEntry.WeakSmartValue = localizedString;
             }
         }
 
@@ -187,7 +168,7 @@ namespace CodeName.Modding.Editor
 
                     if (currentValue != newValue)
                     {
-                        Undo.RecordObject(collection, "Edit localization entry.");
+                        Undo.RecordObject(collection, "Edit localization entry");
                         table.RawEntries[localizationKey] = newValue;
                         ImportedAssetUtility.SetDirty(collection);
                     }
@@ -206,7 +187,7 @@ namespace CodeName.Modding.Editor
             if (!asset.TryGetResourceKey(out _, out var mod))
             {
                 collection = null;
-                error = AssetNotPartOfModMessage;
+                error = "Asset is not part of a mod";
 
                 return false;
             }
@@ -214,7 +195,7 @@ namespace CodeName.Modding.Editor
             if (mod.MainLocalizationTableCollection == null)
             {
                 collection = null;
-                error = $"Mod does not have a {typeof(LocalizationTableCollection).Name}.";
+                error = $"Mod does not have a {typeof(LocalizationTableCollection).Name}";
 
                 return false;
             }
