@@ -36,12 +36,12 @@ namespace CodeName.Modding.Mods
         private string GenerateUniqueLocalizationTablePath()
         {
             var modPath = GetModPath();
-            var tablePath = Path.Join(modPath, ContentFolderPath, $"{LocalizationTableFileName}{LocalizationTableExtension}");
+            var tablePath = Path.Join(modPath, ContentFolderName, $"{LocalizationTableFileName}{LocalizationTableExtension}");
 
             var suffix = 1;
             while (File.Exists(tablePath))
             {
-                tablePath = Path.Join(modPath, ContentFolderPath, $"{LocalizationTableFileName}_{suffix}{LocalizationTableExtension}");
+                tablePath = Path.Join(modPath, ContentFolderName, $"{LocalizationTableFileName}_{suffix}{LocalizationTableExtension}");
                 suffix++;
             }
 

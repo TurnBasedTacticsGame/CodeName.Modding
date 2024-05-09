@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using CodegenCS;
-using Exanite.Core.Properties;
 using Sirenix.OdinInspector;
 using UnityEditor;
+using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
+using PropertyDefinition = Exanite.Core.Properties.PropertyDefinition;
 
 namespace CodeName.Modding.Mods
 {
@@ -16,27 +17,53 @@ namespace CodeName.Modding.Mods
         [Button]
         public void UpdateResourceList()
         {
-            var assetGuids = AssetDatabase.FindAssets("", new[]
+            var searchPaths = new List<string>();
+            var contentFolderPath = Path.Join(GetModPath(), ContentFolderName);
+            var overridesFolderPath = Path.Join(GetModPath(), OverridesFolderName);
+            if (Directory.Exists(contentFolderPath))
             {
-                GetModContentPath(),
-            });
+                searchPaths.Add(contentFolderPath);
+            }
 
-            var assetInfos = new List<AssetInfo>(assetGuids.Length);
+            if (Directory.Exists(overridesFolderPath))
+            {
+                searchPaths.Add(overridesFolderPath);
+            }
+
+            var assetGuids = AssetDatabase.FindAssets("", searchPaths.ToArray());
+            var assetInfos = new List<AssetInfo>();
             foreach (var assetGuid in assetGuids)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(assetGuid);
-                var modAssetKey = ConvertToModAssetKey(assetPath);
-
                 var asset = AssetDatabase.LoadMainAssetAtPath(assetPath);
-                assetInfos.Add(new AssetInfo(asset, modAssetKey));
+                assetInfos.Add(new AssetInfo(asset, assetPath));
 
                 foreach (var subAsset in AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath))
                 {
-                    assetInfos.Add(new AssetInfo(subAsset, $"{modAssetKey}[{subAsset.name}]"));
+                    assetInfos.Add(new AssetInfo(asset, assetPath, subAsset.name));
                 }
             }
 
-            PopulateResources(assetInfos);
+            resources.Clear();
+            foreach (var assetInfo in assetInfos)
+            {
+                switch (assetInfo.Asset)
+                {
+                    case DefaultAsset:
+                    case MonoScript:
+                    {
+                        break;
+                    }
+                    default:
+                    {
+                        resources.Add(new ModResource(ConvertToModAssetKey(assetInfo), assetInfo.Asset));
+
+                        break;
+                    }
+                }
+            }
+
+            resources.Sort((left, right) => string.Compare(left.Key, right.Key, StringComparison.Ordinal));
 
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
@@ -49,56 +76,6 @@ namespace CodeName.Modding.Mods
         {
             UpdateResourceList();
             GenerateClass();
-        }
-
-        private void PopulateResources(List<AssetInfo> assetInfos)
-        {
-            var overrides = new HashSet<Object>();
-            for (var i = resources.Count - 1; i >= 0; i--)
-            {
-                var resource = resources[i];
-                if (resource.IsOverride)
-                {
-                    overrides.Add(resource.Asset);
-
-                    continue;
-                }
-
-                resources.RemoveAt(i);
-            }
-
-            foreach (var assetInfo in assetInfos)
-            {
-                if (overrides.Contains(assetInfo.Asset))
-                {
-                    continue;
-                }
-
-                switch (assetInfo.Asset)
-                {
-                    case DefaultAsset:
-                    case MonoScript:
-                    {
-                        break;
-                    }
-                    default:
-                    {
-                        resources.Add(new ModResource(assetInfo.Key, assetInfo.Asset));
-
-                        break;
-                    }
-                }
-            }
-
-            resources.Sort((left, right) =>
-            {
-                if (left.IsOverride && !right.IsOverride)
-                {
-                    return -1;
-                }
-
-                return string.Compare(left.Key, right.Key, StringComparison.Ordinal);
-            });
         }
 
         [BoxGroup(CodegenGroup)]
@@ -178,39 +155,67 @@ namespace CodeName.Modding.Mods
             writer.WriteLine($"public static global::{typeof(PropertyDefinition)}<global::{resource.Asset.GetType()}> {key} {{ get; }} = new(\"{resource.Key}\");");
         }
 
-        private string ConvertToModAssetKey(string assetPath)
+        /// <remarks>
+        /// <see cref="assetPath"/> must be from the root of the project.
+        /// </remarks>
+        private ResourceKey ConvertToModAssetKey(AssetInfo assetInfo)
         {
-            // Remove entire file extension, including cases where a file has "multiple extensions".
-            // Eg: 'file.ext1.ext2' should become 'file'
-            var assetName = Path.GetFileName(assetPath);
+            var assetPath = Path.GetRelativePath(GetModPath(), assetInfo.Path);
+
+            var segments = assetPath.Split(Path.DirectorySeparatorChar);
+            Assert.IsTrue(segments.Length >= 2, $"{assetPath} must be in the {ContentFolderName} folder or {OverridesFolderName} folder");
+
+            // Remove entire file extension, including cases where a file has "multiple" extensions.
+            // Eg: "file.ext1.ext2"'" should become "file"
+            var assetName = segments[segments.Length - 1];
             var firstPeriodIndex = assetName.IndexOf('.');
             if (firstPeriodIndex >= 0)
             {
-                assetName = assetName.Substring(0, firstPeriodIndex);
+                segments[segments.Length - 1] = assetName.Substring(0, firstPeriodIndex);
             }
 
-            assetPath = assetPath.Substring(GetModContentPath().Length + 1);
-            assetPath = Path.Combine(Path.GetDirectoryName(assetPath) ?? "", assetName);
-            assetPath = assetPath.Replace("\\", "/");
+            var modId = Id;
+            var assetPathStartIndex = 1;
+            if (segments[0] == OverridesFolderName)
+            {
+                modId = segments[1];
+                assetPathStartIndex++;
 
-            return $"{Id}:{assetPath}";
-        }
+                Assert.IsTrue(segments.Length >= 3, $"{assetPath} is an override. It must be in a subfolder of the {OverridesFolderName} folder. The name of the subfolder will be used as the Mod ID.");
+            }
 
-        private string GetModContentPath()
-        {
-            return Path.Join(GetModPath(), contentFolderPath);
+            var assetResourcePath = string.Empty;
+            for (var i = assetPathStartIndex; i < segments.Length; i++)
+            {
+                if (i != assetPathStartIndex)
+                {
+                    assetResourcePath += "/";
+                }
+
+                assetResourcePath += segments[i];
+            }
+
+            var resourceKey = $"{modId}:{assetResourcePath}";
+            if (assetInfo.SubAssetName != null)
+            {
+                resourceKey += $"[{assetInfo.SubAssetName}]";
+            }
+
+            return new ResourceKey(resourceKey);
         }
 
         private class AssetInfo
         {
-            public AssetInfo(Object asset, string key)
+            public Object Asset { get; }
+            public string Path { get; }
+            public string SubAssetName { get; }
+
+            public AssetInfo(Object asset, string path, string subAssetName = null)
             {
                 Asset = asset;
-                Key = key;
+                Path = path;
+                SubAssetName = subAssetName;
             }
-
-            public Object Asset { get; }
-            public string Key { get; }
         }
 #endif
     }

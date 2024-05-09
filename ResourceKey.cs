@@ -17,9 +17,14 @@ namespace CodeName.Modding
 
         public string GetModId()
         {
-            var modIdMatch = Regexes.SelectModId.Match(internalKey);
+            var firstColonIndex = internalKey.IndexOf(':');
+            return internalKey.Substring(0, firstColonIndex);
+        }
 
-            return modIdMatch.Success ? modIdMatch.Groups["ModId"].Value : string.Empty;
+        public string GetResourcePath()
+        {
+            var firstColonIndex = internalKey.IndexOf(':');
+            return internalKey.Substring(firstColonIndex + 1);
         }
 
         public ResourceKey ReplaceCsharpUnsafeCharacters(char replacement = '_')
@@ -74,7 +79,6 @@ namespace CodeName.Modding
 
         public static class Regexes
         {
-            public static Regex SelectModId { get; } = new(@"^(?<ModId>[A-Za-z0-9_]+?):");
             public static Regex ReplaceCsharpUnsafeCharacters { get; } = new(@"[^A-Za-z0-9_]+");
         }
     }

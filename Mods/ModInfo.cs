@@ -8,8 +8,8 @@ namespace CodeName.Modding.Mods
 {
     public partial class ModInfo : ScriptableObject
     {
-        public static string ContentFolderPath = "Content";
-        public static string OverridesFolderPath = "Overrides";
+        public static string ContentFolderName = "Content";
+        public static string OverridesFolderName = "Overrides";
 
         [SerializeField] private string displayName = "Mod Name";
         [PropertySpace(SpaceBefore = 0, SpaceAfter = 16)]
@@ -19,9 +19,6 @@ namespace CodeName.Modding.Mods
 
         [BoxGroup(LocalizationGroup)]
         [SerializeField] private List<LocalizationTableCollection> localizationTableCollections = new();
-
-        [BoxGroup(CodegenGroup)]
-        [SerializeField] private string contentFolderPath = "Content";
 
         [BoxGroup(CodegenGroup)]
         [SerializeField] private string generatedNamespace = "ModName";

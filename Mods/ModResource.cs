@@ -8,13 +8,11 @@ namespace CodeName.Modding.Mods
     [Serializable]
     public class ModResource
     {
-        [EnableIf(nameof(isOverride))]
+        [ReadOnly]
         [SerializeField] private string key;
 
-        [EnableIf(nameof(isOverride))]
+        [ReadOnly]
         [SerializeField] private Object asset;
-
-        [SerializeField] private bool isOverride;
 
         public ModResource(string key, Object asset)
         {
@@ -24,7 +22,5 @@ namespace CodeName.Modding.Mods
 
         public string Key => key;
         public Object Asset => asset;
-
-        public bool IsOverride => isOverride;
     }
 }
