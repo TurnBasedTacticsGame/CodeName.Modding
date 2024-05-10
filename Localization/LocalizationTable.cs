@@ -65,5 +65,30 @@ namespace CodeName.Modding.Localization
                 RawEntries[entry.Key] = entry.Value;
             }
         }
+
+        [Serializable]
+        private class LocalizationEntry
+        {
+            [SerializeField] private string key;
+            [SerializeField] private string value;
+
+            public LocalizationEntry(string key, string value)
+            {
+                this.key = key;
+                this.value = value;
+            }
+
+            public string Key
+            {
+                get => key;
+                set => key = value;
+            }
+
+            public string Value
+            {
+                get => value;
+                set => this.value = value;
+            }
+        }
     }
 }
