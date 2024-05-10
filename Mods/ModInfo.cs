@@ -27,6 +27,7 @@ namespace CodeName.Modding.Mods
         [SerializeField] private string generatedNamespace = "ModName";
 
         [BoxGroup(CodegenGroup)]
+        [LabelText("Resources")]
         [Searchable]
         [ListDrawerSettings(ShowFoldout = false, DraggableItems = false, HideAddButton = true, HideRemoveButton = true)]
         [SerializeField] private List<ModResource> serializedResources = new();
