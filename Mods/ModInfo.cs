@@ -68,7 +68,7 @@ namespace CodeName.Modding.Mods
         }
 
         [Serializable]
-        private class ModResource : IComparable<ModResource>
+        private struct ModResource : IComparable<ModResource>
         {
             [ReadOnly]
             [SerializeField] private string key;
@@ -87,16 +87,6 @@ namespace CodeName.Modding.Mods
 
             public int CompareTo(ModResource other)
             {
-                if (ReferenceEquals(this, other))
-                {
-                    return 0;
-                }
-
-                if (ReferenceEquals(null, other))
-                {
-                    return 1;
-                }
-
                 return string.Compare(key, other.key, StringComparison.Ordinal);
             }
         }
