@@ -62,7 +62,7 @@ namespace CodeName.Modding.Editor
 
                 Property.RecordForUndo("Edit localization key");
 
-                if (mod != null)
+                if (mod != null && mod.RawResources.Inverse.ContainsKey(asset))
                 {
                     if (Property.Info.IsEditable)
                     {

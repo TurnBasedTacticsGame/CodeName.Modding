@@ -55,6 +55,7 @@ namespace CodeName.Modding.Mods
             {
                 serializedResources.Add(new ModResource(key, value));
             }
+            serializedResources.Sort();
         }
 
         public void OnAfterDeserialize()
@@ -67,7 +68,7 @@ namespace CodeName.Modding.Mods
         }
 
         [Serializable]
-        private class ModResource
+        private class ModResource : IComparable<ModResource>
         {
             [ReadOnly]
             [SerializeField] private string key;
@@ -83,6 +84,21 @@ namespace CodeName.Modding.Mods
 
             public string Key => key;
             public Object Asset => asset;
+
+            public int CompareTo(ModResource other)
+            {
+                if (ReferenceEquals(this, other))
+                {
+                    return 0;
+                }
+
+                if (ReferenceEquals(null, other))
+                {
+                    return 1;
+                }
+
+                return string.Compare(key, other.key, StringComparison.Ordinal);
+            }
         }
     }
 }
