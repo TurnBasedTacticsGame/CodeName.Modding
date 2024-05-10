@@ -123,11 +123,6 @@ namespace CodeName.Modding.Editor
                     collection = mod.CreateLocalizationTable();
                 }
 
-                foreach (var table in collection.Tables)
-                {
-                    table.RawEntries.TryAdd(localizedString.Key, string.Empty);
-                }
-
                 Property.RecordForUndo("Generate localization key");
                 Property.ValueEntry.WeakSmartValue = localizedString;
             }
