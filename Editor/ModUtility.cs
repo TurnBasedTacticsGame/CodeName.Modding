@@ -18,17 +18,9 @@ namespace CodeName.Modding.Editor
                 return false;
             }
 
-            var resource = mod.Resources.Find(r => r.Asset == asset);
-            if (resource == null)
-            {
-                key = null;
+            mod.RawResources.Inverse.TryGetValue(asset, out key);
 
-                return false;
-            }
-
-            key = resource.Key;
-
-            return true;
+            return key != null;
         }
 
         public static bool TryGetExpectedMod(this Object asset, out ModInfo mod)

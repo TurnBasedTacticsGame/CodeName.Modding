@@ -29,9 +29,9 @@ namespace CodeName.Modding.Loading
 
         private void AddModResources(LoadedGameInfo gameInfo, LoadedModInfo mod)
         {
-            foreach (var resource in mod.OriginalInfo.Resources)
+            foreach (var (resourceKey, asset) in mod.OriginalInfo.RawResources)
             {
-                gameInfo.Resources[resource.Key] = resource.Asset;
+                gameInfo.Resources[resourceKey] = asset;
             }
         }
 

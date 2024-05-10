@@ -44,7 +44,7 @@ namespace CodeName.Modding.Mods
                 }
             }
 
-            resources.Clear();
+            serializedResources.Clear();
             foreach (var assetInfo in assetInfos)
             {
                 switch (assetInfo.Asset)
@@ -56,14 +56,14 @@ namespace CodeName.Modding.Mods
                     }
                     default:
                     {
-                        resources.Add(new ModResource(ConvertToModAssetKey(assetInfo), assetInfo.Asset));
+                        serializedResources.Add(new ModResource(ConvertToModAssetKey(assetInfo), assetInfo.Asset));
 
                         break;
                     }
                 }
             }
 
-            resources.Sort((left, right) => string.Compare(left.Key, right.Key, StringComparison.Ordinal));
+            serializedResources.Sort((left, right) => string.Compare(left.Key, right.Key, StringComparison.Ordinal));
 
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
@@ -95,7 +95,7 @@ namespace CodeName.Modding.Mods
 
                 using (writer.WithCBlock("public static partial class Content"))
                 {
-                    foreach (var resource in resources)
+                    foreach (var resource in serializedResources)
                     {
                         var modId = new ResourceKey(resource.Key).GetModId();
                         if (modId != Id)
