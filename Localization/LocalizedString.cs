@@ -26,10 +26,16 @@ namespace CodeName.Modding.Localization
                 return $"\\{{{MissingKeyMessage}\\}}";
             }
 
-            // Todo Allow selection of different locales
-            if (GameResources.LocalizationTables.TryGetValue(Constants.DefaultLocaleCode, out var table) && table.TryGetLocalizedValue(key, out var localizedValue))
+            if (GameResources.LocalizationTables.TryGetValue(GameResources.LocaleCode, out var tables))
             {
-                return localizedValue;
+                for (var i = tables.Count - 1; i >= 0; i--)
+                {
+                    var table = tables[i];
+                    if (table.TryGetLocalizedValue(key, out var localizedValue))
+                    {
+                        return localizedValue;
+                    }
+                }
             }
 
             return $"\\{{{key}\\}}";

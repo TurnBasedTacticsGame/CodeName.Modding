@@ -23,7 +23,11 @@ namespace CodeName.Modding
         public List<LoadedModInfo> Mods { get; } = new();
 
         public TwoWayDictionary<string, Object> Resources { get; } = new();
-        public Dictionary<string, LocalizationTable> LocalizationTables { get; } = new();
+
+        /// <summary>
+        /// Indexed by locale code. Tables later in the list have higher priority and should be searched first.
+        /// </summary>
+        public Dictionary<string, List<LocalizationTable>> LocalizationTables { get; } = new();
 
         public List<Func<UniTask>> OnUnloadTasks { get; } = new();
     }

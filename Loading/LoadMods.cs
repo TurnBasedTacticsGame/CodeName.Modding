@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CodeName.Modding.Localization;
 using CodeName.Modding.Mods;
 using Cysharp.Threading.Tasks;
@@ -41,21 +42,13 @@ namespace CodeName.Modding.Loading
             {
                 foreach (var table in tableCollection.Tables)
                 {
-                    if (!gameInfo.LocalizationTables.TryGetValue(table.LocaleCode, out var loadedTable))
+                    if (!gameInfo.LocalizationTables.TryGetValue(table.LocaleCode, out var loadedTables))
                     {
-                        loadedTable = new LocalizationTable(table.LocaleCode);
-                        gameInfo.LocalizationTables[table.LocaleCode] = loadedTable;
+                        loadedTables = new List<LocalizationTable>();
+                        gameInfo.LocalizationTables[table.LocaleCode] = loadedTables;
                     }
 
-                    foreach (var (key, value) in table.RawEntries)
-                    {
-                        if (!loadedTable.IsValidLocalizedValue(value))
-                        {
-                            continue;
-                        }
-
-                        loadedTable.RawEntries[key] = value;
-                    }
+                    loadedTables.Add(table);
                 }
             }
         }

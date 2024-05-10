@@ -13,8 +13,9 @@ namespace CodeName.Modding
 
         private static TwoWayDictionary<string, Object> Resources => GameInfo.Resources;
 
+        public static string LocaleCode = Constants.DefaultLocaleCode;
         public static IReadOnlyDictionary<string, Object> ResourcesByKey => GameInfo.Resources;
-        public static Dictionary<string, LocalizationTable> LocalizationTables => GameInfo.LocalizationTables;
+        public static Dictionary<string, List<LocalizationTable>> LocalizationTables => GameInfo.LocalizationTables;
 
         public static Object GetResource(string key)
         {
