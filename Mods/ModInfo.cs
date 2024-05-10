@@ -68,7 +68,7 @@ namespace CodeName.Modding.Mods
         }
 
         [Serializable]
-        private struct ModResource : IComparable<ModResource>
+        private struct ModResource : IComparable<ModResource>, IEquatable<ModResource>
         {
             [ReadOnly]
             [SerializeField] private string key;
@@ -88,6 +88,31 @@ namespace CodeName.Modding.Mods
             public int CompareTo(ModResource other)
             {
                 return string.Compare(key, other.key, StringComparison.Ordinal);
+            }
+
+            public bool Equals(ModResource other)
+            {
+                return key == other.key && Equals(asset, other.asset);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is ModResource other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(key, asset);
+            }
+
+            public static bool operator ==(ModResource left, ModResource right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(ModResource left, ModResource right)
+            {
+                return !left.Equals(right);
             }
         }
     }
