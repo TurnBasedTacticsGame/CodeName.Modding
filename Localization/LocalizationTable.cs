@@ -67,7 +67,7 @@ namespace CodeName.Modding.Localization
         }
 
         [Serializable]
-        private class LocalizationEntry
+        private struct LocalizationEntry
         {
             [SerializeField] private string key;
             [SerializeField] private string value;
