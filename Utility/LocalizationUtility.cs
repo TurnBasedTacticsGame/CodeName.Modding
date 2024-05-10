@@ -15,5 +15,10 @@ namespace CodeName.Modding.Utility
 
             return new LocalizedString($"{new ResourceKey(key).ReplaceCsharpUnsafeCharacters()}_{name}");
         }
+
+        public static bool IsValidLocalizedValue(string localizedValue)
+        {
+            return !string.IsNullOrEmpty(localizedValue);
+        }
     }
 }

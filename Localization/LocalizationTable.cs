@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CodeName.Modding.Utility;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ namespace CodeName.Modding.Localization
 
         public bool TryGetLocalizedValue(string key, out string localizedValue)
         {
-            if (RawEntries.TryGetValue(key, out localizedValue) && IsValidLocalizedValue(localizedValue))
+            if (RawEntries.TryGetValue(key, out localizedValue) && LocalizationUtility.IsValidLocalizedValue(localizedValue))
             {
                 return true;
             }
@@ -41,11 +42,6 @@ namespace CodeName.Modding.Localization
             localizedValue = string.Empty;
 
             return false;
-        }
-
-        public bool IsValidLocalizedValue(string localizedValue)
-        {
-            return !string.IsNullOrEmpty(localizedValue);
         }
 
         public void OnBeforeSerialize()
