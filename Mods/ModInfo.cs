@@ -4,7 +4,6 @@ using CodeName.Modding.Localization;
 using Exanite.Core.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace CodeName.Modding.Mods
