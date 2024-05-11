@@ -142,6 +142,8 @@ namespace CodeName.Modding.Mods
                 }
             }
 
+            writer.WriteLine();
+
             AssetDatabase.Refresh();
         }
 
