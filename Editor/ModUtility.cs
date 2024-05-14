@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.IO;
 using System.Linq;
 using CodeName.Modding.Mods;
@@ -9,9 +8,9 @@ namespace CodeName.Modding.Editor
 {
     public static class ModUtility
     {
-        public static bool TryGetResourceKey(this Object asset, out string key, out ModInfo mod)
+        public static bool TryGetResourceKey(Object asset, out string key, out ModInfo mod)
         {
-            if (!TryGetExpectedMod(asset, out mod))
+            if (!TryGetMod(asset, out mod))
             {
                 key = null;
 
@@ -23,7 +22,7 @@ namespace CodeName.Modding.Editor
             return key != null;
         }
 
-        public static bool TryGetExpectedMod(this Object asset, out ModInfo mod)
+        public static bool TryGetMod(Object asset, out ModInfo mod)
         {
             var folderPath = Path.GetDirectoryName(AssetDatabase.GetAssetPath(asset));
             if (string.IsNullOrEmpty(folderPath))
@@ -64,4 +63,3 @@ namespace CodeName.Modding.Editor
         }
     }
 }
-#endif

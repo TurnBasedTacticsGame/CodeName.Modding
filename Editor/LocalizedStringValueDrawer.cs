@@ -34,7 +34,7 @@ namespace CodeName.Modding.Editor
             localizedString = (LocalizedString)Property.ValueEntry.WeakSmartValue;
             IsFoldoutOpen.TryAdd(Property.Path, false);
 
-            if (!asset.TryGetExpectedMod(out mod))
+            if (!ModUtility.TryGetMod(asset, out mod))
             {
                 collection = null;
                 return;
@@ -112,7 +112,7 @@ namespace CodeName.Modding.Editor
             if (SirenixEditorGUI.IconButton(EditorIcons.Refresh, tooltip: "Generate Localization Entry"))
             {
                 var localizedString = LocalizationUtility.CreateLocalizedString(asset, attribute.Name);
-                if (!asset.TryGetResourceKey(out _, out var mod))
+                if (!ModUtility.TryGetResourceKey(asset, out _, out var mod))
                 {
                     return;
                 }

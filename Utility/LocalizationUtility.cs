@@ -8,7 +8,7 @@ namespace CodeName.Modding.Utility
     {
         public static LocalizedString CreateLocalizedString(Object asset, string name)
         {
-            if (!asset.TryGetResourceKey(out var key, out _))
+            if (!ModUtility.TryGetResourceKey(asset, out var key, out _))
             {
                 return default;
             }
