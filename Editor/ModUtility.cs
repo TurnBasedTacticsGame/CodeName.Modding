@@ -64,5 +64,4 @@ namespace CodeName.Modding.Editor
         }
     }
 }
-
 #endif
