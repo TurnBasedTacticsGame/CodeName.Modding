@@ -117,10 +117,9 @@ namespace CodeName.Modding.Editor
                     return;
                 }
 
-                var collection = mod.MainLocalizationTableCollection;
-                if (collection == null)
+                if (mod.MainLocalizationTableCollection == null)
                 {
-                    collection = mod.CreateLocalizationTable();
+                    mod.CreateLocalizationTable();
                 }
 
                 Property.RecordForUndo("Generate localization key");
