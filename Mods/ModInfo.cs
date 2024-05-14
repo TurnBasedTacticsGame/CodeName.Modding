@@ -47,7 +47,7 @@ namespace CodeName.Modding.Mods
             set => entrypoint = value;
         }
 
-        public void OnBeforeSerialize()
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
             serializedResources.Clear();
             foreach (var (key, value) in RawResources)
@@ -57,7 +57,7 @@ namespace CodeName.Modding.Mods
             serializedResources.Sort();
         }
 
-        public void OnAfterDeserialize()
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
             RawResources.Clear();
             foreach (var entry in serializedResources)

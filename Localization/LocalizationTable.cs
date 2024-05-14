@@ -43,7 +43,7 @@ namespace CodeName.Modding.Localization
             return false;
         }
 
-        public void OnBeforeSerialize()
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
             serializedEntries.Clear();
             foreach (var (key, value) in RawEntries)
@@ -52,7 +52,7 @@ namespace CodeName.Modding.Localization
             }
         }
 
-        public void OnAfterDeserialize()
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
             RawEntries.Clear();
             foreach (var entry in serializedEntries)
