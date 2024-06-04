@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using CodeName.Modding.Localization;
 using CsvHelper;
-using Sirenix.Utilities;
 using UnityEngine;
 
 namespace CodeName.Modding.Serialization
@@ -81,7 +80,7 @@ namespace CodeName.Modding.Serialization
             var keys = new HashSet<string>();
             foreach (var table in collection.Tables)
             {
-                keys.AddRange(table.RawEntries.Keys);
+                keys.UnionWith(table.RawEntries.Keys);
             }
 
             var localeCodes = new HashSet<string>();
