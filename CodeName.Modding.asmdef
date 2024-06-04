@@ -21,7 +21,6 @@
         "Newtonsoft.Json.dll",
         "Sirenix.OdinInspector.Attributes.dll",
         "Sirenix.OdinInspector.Editor.dll",
-        "Sirenix.Serialization.dll",
         "Sirenix.Utilities.Editor.dll",
         "Sirenix.Utilities.dll",
         "System.Text.Json.dll",
