@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +9,7 @@ using CsvHelper;
 using Sirenix.Utilities;
 using UnityEngine;
 
-namespace CodeName.Modding.Editor
+namespace CodeName.Modding.Serialization
 {
     public class LocalizationTableCollectionSerializer
     {
@@ -245,4 +244,3 @@ namespace CodeName.Modding.Editor
         }
     }
 }
-#endif

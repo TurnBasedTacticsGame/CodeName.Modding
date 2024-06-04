@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using CodeName.Modding.Localization;
+using CodeName.Modding.Serialization;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
